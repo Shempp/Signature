@@ -6,11 +6,12 @@ To build the program you need a [boost](https://www.boost.org/) library.
 The project was created in the Visual Studio IDE and necessary paths for the boost library are already registered in settings of the project. However, your paths to library can differ.
 * In Configuration Properties > C/C++ > General > Additional Include Directories, enter the path to the Boost root directory. For example:
 ```
-C:\Program Files\boost\boost_1_73_0
+C:\boost\boost_1_76_0
 ```
+* [Build](https://www.boost.org/doc/libs/1_76_0/more/getting_started/windows.html#prepare-to-use-a-boost-library-binary) Boost library
 * In Configuration Properties > Linker > Additional Library Directories, enter the path to the Boost binaries. For example:
 ```
-C:\Program Files\boost\boost_1_73_0\stage\lib\
+C:\boost\boost_1_76_0\stage\lib\
 ```
 ## Usage
 Template:
