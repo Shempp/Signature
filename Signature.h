@@ -16,14 +16,14 @@ private:
 	void WriteHashToFile(const std::uint32_t& resultCRC, char* strToWrite);
 
 	/* Changes at runtime. Contains information how much more to read */
-	size_t sizeToRead;
-	size_t sizeOfBlock;
+	size_t m_sizeToRead;
+	size_t m_sizeOfBlock;
 	/* Count of checksum tasks */
-	size_t countHashTask;
+	size_t m_countHashTask;
 
-	boost::iostreams::mapped_file_source readFile;
-	boost::iostreams::mapped_file_params paramsWriteFile;
-	boost::iostreams::mapped_file_sink writeFile;
+	boost::iostreams::mapped_file_source m_readFile;
+	boost::iostreams::mapped_file_params m_paramsWriteFile;
+	boost::iostreams::mapped_file_sink m_writeFile;
 
-	std::exception_ptr exPtr;
+	std::exception_ptr m_exPtr;
 };

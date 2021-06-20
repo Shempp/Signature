@@ -9,22 +9,22 @@
 
 Signature::Signature(const Params& param)
 {
-	readFile.open(param.GetPathToReadFile());
+	m_readFile.open(param.GetPathToReadFile());
 
-	sizeToRead = readFile.size();
-	sizeOfBlock = param.GetSizeBlock();
-	countHashTask = ceil(static_cast<double>(sizeToRead) / sizeOfBlock);
+	m_sizeToRead = m_readFile.size();
+	m_sizeOfBlock = param.GetSizeBlock();
+	m_countHashTask = ceil(static_cast<double>(m_sizeToRead) / m_sizeOfBlock);
 
-	paramsWriteFile.path = param.GetPathToWriteFile();
-	paramsWriteFile.new_file_size = constParams::sizeOfCRCHash * countHashTask;
-	paramsWriteFile.flags = boost::iostreams::mapped_file::mapmode::readwrite;
+	m_paramsWriteFile.path = param.GetPathToWriteFile();
+	m_paramsWriteFile.new_file_size = constParams::sizeOfCRCHash * m_countHashTask;
+	m_paramsWriteFile.flags = boost::iostreams::mapped_file::mapmode::readwrite;
 
-	writeFile.open(paramsWriteFile);
+	m_writeFile.open(m_paramsWriteFile);
 }
 
 void Signature::StartProcessing()
 {
-	if (readFile.is_open() && writeFile.is_open())
+	if (m_readFile.is_open() && m_writeFile.is_open())
 	{
 		/* TODO: in some OS std::thread::hardware_concurrency cannot be performed. Need to check it */
 		const size_t countCPU = std::thread::hardware_concurrency(); 
@@ -46,27 +46,27 @@ void Signature::StartProcessing()
 		}
 		*/
 
-		for (size_t i = 0; i < countHashTask; i++)
+		for (size_t i = 0; i < m_countHashTask; i++)
 		{
-			size_t offsetToRead = sizeOfBlock;
+			size_t offsetToRead = m_sizeOfBlock;
 
 			/* For the last block read the remaining bytes */
-			if (sizeOfBlock > sizeToRead)
-				offsetToRead = sizeToRead;
+			if (m_sizeOfBlock > m_sizeToRead)
+				offsetToRead = m_sizeToRead;
 
 			boost::asio::post(thPool, boost::bind(&Signature::GetCRC32Hash, this,
-				readFile.data() + i * offsetToRead, offsetToRead, writeFile.data() + i * constParams::sizeOfCRCHash));
+				m_readFile.data() + i * offsetToRead, offsetToRead, m_writeFile.data() + i * constParams::sizeOfCRCHash));
 
-			sizeToRead -= sizeOfBlock;
+			m_sizeToRead -= m_sizeOfBlock;
 		}
 
 		thPool.join();
 
-		readFile.close();
-		writeFile.close();
+		m_readFile.close();
+		m_writeFile.close();
 
-		if (exPtr)
-			std::rethrow_exception(exPtr);
+		if (m_exPtr)
+			std::rethrow_exception(m_exPtr);
 	}
 	else
 		throw std::runtime_error("Can't open input/output file.");
@@ -83,7 +83,7 @@ void Signature::GetCRC32Hash(const char* strToRead, const size_t lengthRead, cha
 	}
 	catch (const std::exception&)
 	{
-		exPtr = std::current_exception();
+		m_exPtr = std::current_exception();
 	}
 }
 
@@ -92,9 +92,11 @@ void Signature::WriteHashToFile(const std::uint32_t& resultCRC, char* strToWrite
 	std::stringstream ss;
 	ss << std::hex << resultCRC;
 
-	/* It is worth mentioning that an padded null will be skipped
-	For example: checksum 0eaf3c32 will be printed in file as eaf3c32 */
+	/* 
+		It is worth mentioning that an padded null will be skipped
+		For example: checksum '0eaf3c32' will be printed in file as 'eaf3c32'
+	*/
 
-	std::string hash = ss.str();
+	auto hash = ss.str();
 	std::copy(hash.begin(), hash.end(), strToWrite);
 }

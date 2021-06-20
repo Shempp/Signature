@@ -21,9 +21,9 @@ public:
 
 private:
 	/* argv[1] - path to file whose checksum must be calculated */
-	std::string pathToReadFile;
+	std::string m_pathToReadFile;
 	/* argv[2] - path to file where hash of readed blocks gonna be */
-	std::string pathToWriteFile;
+	std::string m_pathToWriteFile;
 	/* argv[3] - size of block file in MB to perform checksum */
-	size_t sizeOfBlock;
+	size_t m_sizeOfBlock;
 };

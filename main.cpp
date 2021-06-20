@@ -1,12 +1,17 @@
-#include "Params.h"
-#include "Signature.h"
-
 #include <iostream>
 #include <chrono>
+
+#include "Params.h"
+#include "Signature.h"
 
 int main(int argc, char* argv[])
 {
 	auto startTime = std::chrono::steady_clock::now();
+
+#ifdef DEBUG
+	argv[1] = "C:\\Users\\gogds\\GitHub\\Signature\\test.txt";
+	argv[2] = "C:\\Users\\gogds\\GitHub\\Signature\\output.txt";
+#endif 
 
 	try
 	{

@@ -21,14 +21,14 @@ Params::Params(int argc, char* argv[])
 
 	try
 	{
-		sizeOfBlock = argc > 3 ?
+		m_sizeOfBlock = argc > 3 ?
 			(boost::lexical_cast<size_t>(argv[3]) * constParams::defaultBlockSize) : constParams::defaultBlockSize;
 
-		if (sizeOfBlock == 0)
+		if (m_sizeOfBlock == 0)
 			throw std::invalid_argument("Wrong third argument. <size_of_block> cannot be null");
 
-		pathToReadFile = argv[1];
-		pathToWriteFile = argv[2];
+		m_pathToReadFile = argv[1];
+		m_pathToWriteFile = argv[2];
 	}
 	catch (const std::exception& ex)
 	{
@@ -38,15 +38,15 @@ Params::Params(int argc, char* argv[])
 
 std::string Params::GetPathToReadFile() const
 {
-	return pathToReadFile;
+	return m_pathToReadFile;
 }
 
 std::string Params::GetPathToWriteFile() const
 {
-	return pathToWriteFile;
+	return m_pathToWriteFile;
 }
 
 size_t Params::GetSizeBlock() const
 {
-	return sizeOfBlock;
+	return m_sizeOfBlock;
 }
